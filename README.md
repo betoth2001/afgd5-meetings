@@ -10,5 +10,5 @@ This plugin uses several custom post meta fields to sync a post with a specified
 The events recur with weekly frequency.  Changes to a post are used to update future occurences without changing the id, while creating a past recurring event with the old information.  This should mimic the functionality of selecting "Following events" in Google calendar when editing a recurring event.
 
 ## Requested Features
-- [ ] Avoid attempting to create recurring event that would contain no instances if new\_start - old\_start less than 1 week and does not contain day of week
-- [*] Handle error codes returned by google services
+- [ ] Avoid attempting to create recurring event that would contain no instances if new\_start - old\_start is less than 1 week and does not contain day of week
+- [x] Handle error codes returned by google services
