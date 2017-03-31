@@ -85,8 +85,7 @@ echo("<div>Start match_fields_Google_cal_event_obj</div>");
     $startDT->modify( 'next '.$value.' '.get_field('start_time',$post_id) );
     echo("\ninside start < current start=".$startDT->format( 'Y-m-d H:i:s'));
   }
-  //$addtocal_atts['start'] = date( 'Y-m-d H:i:s',strtotime( get_field('start_time') ) );
-  $addtocal_atts['start'] = $startDT->format( 'Y-m-d H:i:s');
+
   $google_start=new Google_Service_Calendar_EventDateTime();
   $google_start->setDateTime($startDT->format( 'c'));
   $google_start->setTimeZone('America/Detroit');

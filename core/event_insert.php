@@ -2,13 +2,15 @@
 /*
 * Create an event in google calendar service
 */
-function afgd5me_event_insert($service,$calendarId, $event){
+function afgd5me_event_insert($service,$calendarId, $inEvent){
   $count=1;
-  $event = afgd5me_event_insert_repeater($service,$calendarId, $event);
+  echo("\n Inside afgd5me_event_insert inEvent=");
+  var_dump($inEvent);
+  $event = afgd5me_event_insert_repeater($service,$calendarId, $inEvent);
   while( ($event === 1 )&&( $count < 5 )) {
     usleep(pow(2,$count));
     $count++;
-    $event = afgd5me_event_insert_repeater($service,$calendarId, $event);
+    $event = afgd5me_event_insert_repeater($service,$calendarId, $inEvent);
   }
 //   die("pre finish event_get");
   if( $event === 1 ) return false;
@@ -21,9 +23,9 @@ function afgd5me_event_insert($service,$calendarId, $event){
 * For a recoverable error, you may call this function again with some hope of sucess.
 * If there is something wrong with request then an error is thrown.
 */
-function afgd5me_event_insert_repeater($service,$calendarId, $event){
+function afgd5me_event_insert_repeater($service,$calendarId, $inEvent){
   try {
-    $event = $service->events->update($calendarId, $event);
+    $event = $service->events->insert($calendarId, $inEvent);
   } catch (Exception $e) {
     $code = $e->getCode();
 //     var_dump($code);

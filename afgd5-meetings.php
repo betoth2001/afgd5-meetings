@@ -10,21 +10,20 @@ Function Prefix: afgd5me_
 */
 
 defined( 'ABSPATH' ) or die( 'AFGD5me No script please!' );
+define('afgd5me_PATH', plugin_dir_path( __FILE__ ) );
 define('afgd5me_APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
 define('afgd5me_CREDENTIALS_PATH', __DIR__.'/.credentials/calendar-php-quickstart.json');
 define('afgd5me_CLIENT_SECRET_PATH', __DIR__.'/.credentials/client_secret.json');
-define('afgd5me_GOOGLE_CALENDAR_ID','aeh0tpvg5mh2oe8v2o5a7ljvhg@group.calendar.google.com'); //in iframes
-//define('afgd5me_GOOGLE_CALENDAR_ID','denqdgnfumoufkbaoamrk96bvg@group.calendar.google.com'); //AFGD5 Meetings
+//define('afgd5me_GOOGLE_CALENDAR_ID','aeh0tpvg5mh2oe8v2o5a7ljvhg@group.calendar.google.com'); //in iframes
+define('afgd5me_GOOGLE_CALENDAR_ID','denqdgnfumoufkbaoamrk96bvg@group.calendar.google.com'); //AFGD5 Meetings
 //define('afgd5me_GOOGLE_CALENDAR_ID','810sjuoae1njk1mstds0ivo408@group.calendar.google.com'); //test Meetings
 require_once __DIR__.'/vendor/autoload.php';
 #include_once('core/event_get.php');
 #include_once('core/match_fields.php');
 #include_once('core/are_events_same.php');
-foreach (glob("core/*.php") as $filename) {
+foreach (glob( afgd5me_PATH ."core/*.php") as $filename) {
     require_once( $filename );
 }
-
-
 
 function afgd5me_render_info_codes(){
   $code_descriptions = [
@@ -78,7 +77,10 @@ function afgd5me_update_event($post_id = '', $event_id = ''){
   if( '' === $post_id ) die("in afgd5me_update_event $post_id missing");
   if( '' === $event_id ) die("in afgd5me_update_event $event_id missing");
   echo("<div>in afgd5me_update_event</div>");
-
+  var_dump(glob( afgd5me_PATH ."core/*.php") );
+foreach (glob( afgd5me_PATH ."core/*.php") as $filename) {
+ echo("<div>".$filename."</div>");
+}
   $client = afgd5me_getClient();
   echo("<div>got client</div>");
   $service = new Google_Service_Calendar($client);
@@ -118,35 +120,28 @@ echo("<div><pre>");
 
     //create new recurring event for old event data so that people who set notifications for a meeting will keep their setting.
     $start = new DateTime(afgd5me_get_gcal_dateTime('start',$revisedEvent));
-    //echo("\n start=".$start);
-    echo("\n start=".$start->format('Ymd\THis\Z'));
+    $startMinusWeek = clone( $start);
+    $startMinusWeek->modify("-1 week");
+    $oldStart = new DateTime(afgd5me_get_gcal_dateTime('start',$event));
+    if( $startMinusWeek >= $oldStart ){ #avoids creating event with no instances
+      //echo("\n start=".$start);
+      echo("\n creating event with old info");
+      echo("\n start=".$start->format('Ymd\THis\Z'));
 
-    $event->setRecurrence(array('RRULE:FREQ=WEEKLY;UNTIL='.$start->format('Ymd\THis\Z') ) );
-    $event->setId('');
-    $event->setICalUID('');
-    //var_dump($event->id);
-    var_dump($event);
-    try {
-      $oldevent = $service->events->insert($calendarId, $event);
-    } catch (Exception $e) {
-      $code = $e->getCode();
-  //     var_dump($code);
-      $msg_obj = $e->getMessage();
-
-      echo("<div><pre>");
-      echo("msg=".$e->getMessage() ."\n");
-      echo("code=".$e->getCode() ."\n");
-      echo("file=".$e->getFile() ."\n");
-      echo("line=".$e->getLine() ."\n");
-      echo("</pre></div>");
+      $event->setRecurrence(array('RRULE:FREQ=WEEKLY;UNTIL='.$start->format('Ymd\THis\Z') ) );
+      $event->setId('');
+      $event->setICalUID('');
+      //var_dump($event->id);
+      //var_dump($event);
+      
+      #UNCOMMENT FOR PRODUCTION
+      $oldevent = afgd5me_event_insert($service,$calendarId, $event);
+      echo("\nold_event id=".$oldevent->id);
+      #die("\nupdate event needed");
     }
-  
-    echo("\n Success");
-    var_dump($oldevent->id);
-    die("\nupdate event needed");
-    
-  
-    $updatedEvent = $service->events->update($calendarId, $event->getId(), $event);
+    $updatedEvent = afgd5me_event_update($service,$calendarId, $revisedEvent);
+    echo( "\nupdated id=".$updatedEvent->id);
+    #$updatedEvent = $service->events->update($calendarId, $event->getId(), $event);
   }
 
 //debug stuff below
