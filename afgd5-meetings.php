@@ -14,8 +14,8 @@ define('afgd5me_PATH', plugin_dir_path( __FILE__ ) );
 define('afgd5me_APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
 define('afgd5me_CREDENTIALS_PATH', __DIR__.'/.credentials/calendar-php-quickstart.json');
 define('afgd5me_CLIENT_SECRET_PATH', __DIR__.'/.credentials/client_secret.json');
-//define('afgd5me_GOOGLE_CALENDAR_ID','aeh0tpvg5mh2oe8v2o5a7ljvhg@group.calendar.google.com'); //in iframes
-define('afgd5me_GOOGLE_CALENDAR_ID','denqdgnfumoufkbaoamrk96bvg@group.calendar.google.com'); //AFGD5 Meetings
+define('afgd5me_GOOGLE_CALENDAR_ID','aeh0tpvg5mh2oe8v2o5a7ljvhg@group.calendar.google.com'); //on main site
+//define('afgd5me_GOOGLE_CALENDAR_ID','denqdgnfumoufkbaoamrk96bvg@group.calendar.google.com'); //AFGD5 Meetings
 //define('afgd5me_GOOGLE_CALENDAR_ID','810sjuoae1njk1mstds0ivo408@group.calendar.google.com'); //test Meetings
 require_once __DIR__.'/vendor/autoload.php';
 #include_once('core/event_get.php');
